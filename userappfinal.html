@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nagad TMR - ব্যবহারকারী অ্যাপ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #e53935;
+            --primary-light: #ff6f60;
+            --primary-dark: #ab000d;
+            --secondary-color: #f5f5f5;
+            --text-color: #333;
+            --text-light: #666;
+            --white: #ffffff;
+            --success: #4caf50;
+            --success-light: #80e27e;
+            --success-dark: #087f23;
+            --gray: #757575;
+            --gray-light: #bdbdbd;
+            --gray-dark: #494949;
+            --nagad: #e53935;
+            --bkash: #e2136e;
+            --rocket: #9849c0;
+            --upay: #149d4b;
+            --tap: #ff6b00;
+            --premium-gradient: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            --gold: #ffd700;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* স্প্ল্যাশ স্ক্রিন */
+        .splash-screen {
+            height: 100vh;
+            background: var(--premium-gradient);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            font-size: 4rem;
+            font-weight: bold;
+            transition: opacity 0.5s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .splash-screen::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+            100% { transform: scale(0.8); opacity: 0.5; }
+        }
+
+        .splash-logo {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .splash-text {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            opacity: 0.9;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* লগইন ফর্ম */
+        .login-container {
+            display: none;
+            height: 100vh;
+            background: var(--premium-gradient);
+            padding: 20px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            max-width: 450px;
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-logo {
+            text-align: center;
+            font-size: 2.8rem;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: bold;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        .app-logo::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: var(--premium-gradient);
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.2);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--premium-gradient);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* মেনু পৃষ্ঠা */
+        .menu-container {
+            display: none;
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .user-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--premium-gradient);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+            margin-right: 15px;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .user-details h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-details p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .logout-btn {
+            width: auto;
+            padding: 10px 20px;
+            background: var(--gray-light);
+            font-size: 0.9rem;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .menu-item {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-left: 5px solid var(--primary-dark);
+        }
+
+        .menu-content {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(229, 57, 53, 0.1);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .menu-text h3 {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+
+        .menu-text p {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .menu-arrow {
+            color: var(--gray);
+            font-size: 1.2rem;
+        }
+
+        /* সাধারণ পৃষ্ঠা স্টাইল */
+        .page-container {
+            display: none;
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .back-btn {
+            background: var(--gray-light);
+            margin-bottom: 25px;
+            width: auto;
+            padding: 10px 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            font-weight: 700;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--premium-gradient);
+            border-radius: 2px;
+        }
+
+        /* অবস্থান পৃষ্ঠা */
+        .map-placeholder {
+            height: 300px;
+            background-color: #eee;
+            margin: 25px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .map-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);
+            background-size: 20px 20px;
+        }
+
+        .map-placeholder i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            z-index: 1;
+        }
+
+        .map-placeholder p {
+            z-index: 1;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        /* দিনের সময় পৃষ্ঠা */
+        .time-container {
+            text-align: center;
+        }
+
+        .time-display {
+            font-size: 3.5rem;
+            margin: 30px 0;
+            color: var(--primary-color);
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .time-btn {
+            margin-top: 15px;
+        }
+
+        .history-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        /* ডিস্ট্রিবিউশন পৃষ্ঠা */
+        .distribution-form {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow);
+        }
+
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            appearance: none;
+            background: url("data:image/svg+xml;utf8,<svg fill='black' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>") no-repeat;
+            background-position: right 15px center;
+            background-color: white;
+        }
+
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(229, 57, 53, 0.2);
+            outline: none;
+        }
+
+        /* মার্কেট ভিজিট পৃষ্ঠা */
+        .market-visit-container {
+            display: none;
+            padding: 20px;
+        }
+
+        .location-prompt {
+            text-align: center;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .location-prompt:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .location-prompt i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .qr-scan-container {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .qr-scan-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .qr-placeholder {
+            width: 250px;
+            height: 250px;
+            background: #f0f0f0;
+            margin: 25px auto;
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .qr-placeholder::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(0,0,0,0.05) 25%, transparent 25%, transparent 50%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.05) 75%, transparent 75%, transparent);
+            background-size: 10px 10px;
+        }
+
+        .qr-placeholder i {
+            font-size: 5rem;
+            color: var(--gray);
+            margin-bottom: 15px;
+            z-index: 1;
+        }
+
+        .simulate-scan {
+            margin-top: 25px;
+            background: var(--success);
+        }
+
+        .posm-form-container {
+            display: none;
+            background: var(--white);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .posm-form-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .company-header {
+            text-align: center;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nagad-header {
+            background: linear-gradient(135deg, var(--nagad), var(--primary-dark));
+        }
+
+        .bkash-header {
+            background: linear-gradient(135deg, var(--bkash), #b10c55);
+        }
+
+        .rocket-header {
+            background: linear-gradient(135deg, var(--rocket), #6a3093);
+        }
+
+        .upay-header {
+            background: linear-gradient(135deg, var(--upay), #0d7a3c);
+        }
+
+        .tap-header {
+            background: linear-gradient(135deg, var(--tap), #cc5500);
+        }
+
+        .posm-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+
+        .posm-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .posm-name {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .posm-counter {
+            display: flex;
+            align-items: center;
+        }
+
+        .counter-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .counter-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .counter-value {
+            margin: 0 15px;
+            font-size: 18px;
+            width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .next-company-btn {
+            background: var(--success);
+            margin-top: 25px;
+        }
+
+        .completion-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .completion-message:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .completion-message i {
+            font-size: 5rem;
+            color: var(--success);
+            margin-bottom: 25px;
+        }
+
+        /* Premium elements */
+        .premium-card {
+            background: var(--premium-gradient);
+            color: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .premium-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+
+        .gold-border {
+            border: 2px solid var(--gold);
+        }
+
+        .premium-title {
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+            font-weight: 700;
+        }
+
+        .premium-button {
+            background: var(--premium-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .premium-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        /* নোটিফিকেশন */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--success);
+            color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            max-width: 350px;
+            transform: translateX(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            background: var(--primary-color);
+        }
+
+        /* লোডিং */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            display: none;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .user-info {
+                flex-direction: column;
+            }
+            
+            .user-avatar {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .time-display {
+                font-size: 2.5rem;
+            }
+            
+            .qr-placeholder {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .premium-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .splash-screen {
+                font-size: 2.5rem;
+            }
+            
+            .splash-logo {
+                font-size: 3.5rem;
+            }
+            
+            .app-logo {
+                font-size: 2rem;
+            }
+            
+            .login-card {
+                padding: 20px;
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .posm-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .notification {
+                max-width: 280px;
+                right: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- স্প্ল্যাশ স্ক্রিন -->
+        <div class="splash-screen" id="splashScreen">
+            <div class="splash-logo">
+                <i class="fas fa-wallet"></i>
+            </div>
+            <div>নগদ TMR</div>
+            <div class="splash-text">লোড হচ্ছে...</div>
+        </div>
+
+        <!-- লগইন পৃষ্ঠা -->
+        <div class="login-container" id="loginContainer">
+            <div class="login-card">
+                <div class="app-logo">Nagad TMR</div>
+                <div class="form-group">
+                    <label for="phone">মোবাইল নম্বর</label>
+                    <input type="tel" id="phone" placeholder="01XXXXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label for="password">পাসওয়ার্ড</label>
+                    <input type="password" id="password" placeholder="পাসওয়ার্ড">
+                </div>
+                <button onclick="login()"><i class="fas fa-sign-in-alt"></i> লগইন</button>
+            </div>
+        </div>
+
+        <!-- মেনু পৃষ্ঠা -->
+        <div class="menu-container" id="menuContainer">
+            <div class="user-header">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <h3 id="userName">মোহাম্মদ রহিম</h3>
+                        <p id="userPhone">০১৭১২৩৪৫৬৭৮</p>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> লগআউট</button>
+            </div>
+
+            <h2 class="page-title">মেনু অপশন</h2>
+            
+            <div class="menu-grid">
+                <div class="menu-item" onclick="showPage('locationContainer')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>বাড়ির অবস্থান</h3>
+                            <p>আপনার বাসার অবস্থান সেট করুন</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('timeContainer')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>দিন শুরু ও শেষের সময়</h3>
+                            <p>কাজ শুরুর এবং শেষের সময় রেকর্ড করুন</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="showPage('distributionContainer')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>ডিস্ট্রিবিউসন হাউস</h3>
+                            <p>পিওএসএম রিসিভ এবং ফেরত</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="startMarketVisit()">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>মার্কেট ভিজিট রিপোর্ট</h3>
+                            <p>দোকান ভিজিট এবং পিওএসএম রিপোর্ট</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="showNotification('শীঘ্রই আসছে...')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>অন্যান্য কার্যক্রম</h3>
+                            <p>বিভিন্ন কার্যক্রম ব্যবস্থাপনা</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="showNotification('শীঘ্রই আসছে...')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>টি.এম.আর এর ছুটির আবেদন</h3>
+                            <p>ছুটির জন্য আবেদন করুন</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="showNotification('শীঘ্রই আসছে...')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>সকল বার্তা</h3>
+                            <p>সমস্ত বার্তা দেখুন</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="showNotification('শীঘ্রই আসছে...')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>মার্চেন্ট অডিট</h3>
+                            <p>মার্চেন্ট অডিট রিপোর্ট</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+                
+                <div class="menu-item" onclick="showNotification('শীঘ্রই আসছে...')">
+                    <div class="menu-content">
+                        <div class="menu-icon">
+                            <i class="fas fa-photo-video"></i>
+                        </div>
+                        <div class="menu-text">
+                            <h3>Local Media Audit</h3>
+                            <p>স্থানীয় মিডিয়া অডিট</p>
+                        </div>
+                    </div>
+                    <div class="menu-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- অবস্থান পৃষ্ঠা -->
+        <div class="page-container" id="locationContainer">
+            <button class="back-btn" onclick="showPage('menuContainer')"><i class="fas fa-arrow-left"></i> পিছনে</button>
+            <h2 class="page-title">বাড়ির অবস্থান</h2>
+            <p>আপনার বর্তমান অবস্থান সেট করুন</p>
+            <div class="map-placeholder">
+                <i class="fas fa-map-marker-alt"></i>
+                <p>মানচিত্র (Google Maps API এখানে সংহত করা হবে)</p>
+            </div>
+            <button onclick="saveLocation()"><i class="fas fa-save"></i> অবস্থান সেভ করুন</button>
+        </div>
+
+        <!-- দিনের সময় পৃষ্ঠা -->
+        <div class="page-container time-container" id="timeContainer">
+            <button class="back-btn" onclick="showPage('menuContainer')"><i class="fas fa-arrow-left"></i> পিছনে</button>
+            <h2 class="page-title">দিন শুরু ও শেষের সময়</h2>
+            <div class="time-display" id="currentTime">00:00:00</div>
+            <button onclick="startDay()"><i class="fas fa-play-circle"></i> দিন শুরু করুন</button>
+            <button class="time-btn" onclick="endDay()"><i class="fas fa-stop-circle"></i> দিন শেষ করুন</button>
+            
+            <div class="history-card">
+                <h3>ইতিহাস</h3>
+                <div id="historyList"></div>
+            </div>
+        </div>
+
+        <!-- ডিস্ট্রিবিউশন পৃষ্ঠা -->
+        <div class="page-container" id="distributionContainer">
+            <button class="back-btn" onclick="showPage('menuContainer')"><i class="fas fa-arrow-left"></i> পিছনে</button>
+            <h2 class="page-title">ডিস্ট্রিবিউসন হাউস হতে পিওএসএম রিসিভ এবং ফেরত</h2>
+            
+            <div class="distribution-form">
+                <div class="form-group">
+                    <label for="itemName">আইটেমের নাম</label>
+                    <input type="text" id="itemName" placeholder="আইটেমের নাম">
+                </div>
+                <div class="form-group">
+                    <label for="itemQuantity">পরিমাণ</label>
+                    <input type="number" id="itemQuantity" placeholder="পরিমাণ">
+                </div>
+                <div class="form-group">
+                    <label for="itemType">ধরন</label>
+                    <select id="itemType">
+                        <option value="receive">রিসিভ</option>
+                        <option value="return">ফেরত</option>
+                    </select>
+                </div>
+                <button onclick="addDistributionItem()"><i class="fas fa-plus"></i> যোগ করুন</button>
+            </div>
+            
+            <div class="history-card">
+                <h3>আইটেমের তালিকা</h3>
+                <div id="itemsContainer"></div>
+            </div>
+        </div>
+
+        <!-- মার্কেট ভিজিট পৃষ্ঠা -->
+        <div class="page-container" id="marketVisitContainer">
+            <button class="back-btn" onclick="showPage('menuContainer')"><i class="fas fa-arrow-left"></i> পিছনে</button>
+            <h2 class="page-title">মার্কেট ভিজিট রিপোর্ট</h2>
+            
+            <!-- লোকেশন প্রম্পট -->
+            <div class="location-prompt premium-card" id="locationPrompt">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>অবস্থান শনাক্তকরণ</h3>
+                <p id="locationStatus">মার্কেট ভিজিট শুরু করতে আপনার বর্তমান অবস্থান শনাক্ত করা হচ্ছে...</p>
+                <button class="premium-button" onclick="getLocation()" id="locationRetryBtn" style="display:none;">
+                    <i class="fas fa-location-arrow"></i> আবার চেষ্টা করুন
+                </button>
+            </div>
+            
+            <!-- কিউআর স্ক্যান পৃষ্ঠা -->
+            <div class="qr-scan-container" id="qrScanContainer">
+                <h3>দোকানের কিউআর কোড স্ক্যান করুন</h3>
+                <div class="qr-placeholder">
+                    <i class="fas fa-qrcode"></i>
+                    <p>ক্যামেরা এক্সেসের অনুমতি দিন</p>
+                </div>
+                <button class="simulate-scan" onclick="simulateQRScan()">
+                    <i class="fas fa-camera"></i> স্ক্যান সিমুলেট করুন
+                </button>
+            </div>
+            
+            <!-- পিওএসএম ফর্ম পৃষ্ঠা -->
+            <div class="posm-form-container" id="posmFormContainer">
+                <!-- কোম্পানির হেডার ডাইনামিকভাবে যোগ করা হবে -->
+            </div>
+            
+            <!-- সম্পূর্ণ বার্তা -->
+            <div class="completion-message" id="completionMessage">
+                <i class="fas fa-check-circle"></i>
+                <h3>মার্কেট ভিজিট সম্পন্ন!</h3>
+                <p>আপনার সমস্ত তথ্য সফলভাবে জমা দেওয়া হয়েছে</p>
+                <button class="back-btn" onclick="showPage('menuContainer')"><i class="fas fa-home"></i> মেনুতে ফিরে যান</button>
+            </div>
+        </div>
+
+        <!-- নোটিফিকেশন -->
+        <div class="notification" id="notification"></div>
+
+        <!-- লোডিং -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text">লোড হচ্ছে...</div>
+        </div>
+    </div>
+
+    <script>
+        // পৃষ্ঠা লোড হওয়ার পর
+        document.addEventListener('DOMContentLoaded', function() {
+            // চেক করুন যদি ব্যবহারকারী আগে লগইন করে থাকে
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+            
+            if (isLoggedIn === 'true' && userData.phone) {
+                document.getElementById('splashScreen').style.display = 'none';
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('menuContainer').style.display = 'block';
+                
+                // ব্যবহারকারীর তথ্য সেট করুন
+                document.getElementById('userName').textContent = userData.name || 'ব্যবহারকারী';
+                document.getElementById('userPhone').textContent = userData.phone;
+            } else {
+                setTimeout(function() {
+                    document.getElementById('splashScreen').style.opacity = '0';
+                    setTimeout(function() {
+                        document.getElementById('splashScreen').style.display = 'none';
+                        document.getElementById('loginContainer').style.display = 'flex';
+                    }, 500);
+                }, 2500);
+            }
+            
+            // বর্তমান সময় আপডেট করুন
+            setInterval(updateTime, 1000);
+            
+            // ডিস্ট্রিবিউশন আইটেম লোড করুন
+            loadDistributionItems();
+            
+            // দিনের ইতিহাস লোড করুন
+            loadDayHistory();
+            
+            // পিওএসএম আইটেম প্রস্তুত করুন
+            preparePOSMItems();
+        });
+
+        // পিওএসএম আইটেম প্রস্তুত করুন
+        function preparePOSMItems() {
+            const posmItems = [
+                "Uddokta QR Sticker",
+                "Awareness Festoon",
+                "ফেস্টুন (লেনদেন)",
+                "ফেস্টুন (Price)",
+                "Festoon Islamic",
+                "Send Money Festoon",
+                "Festoon Campaign",
+                "Festoon Indian Visa Payment",
+                "Nagad Sheba Service Festoon",
+                "Slim Poster",
+                "Large Poster",
+                "Shop Banner Shakib 3 Feet",
+                "Shop Shakib Price 4 feet",
+                "Shop Banner Shakib 6 feet",
+                "Shop Banner Send Money 3 feet",
+                "Shop Banner Send Money 4 feet",
+                "Shop Banner Send Money 6 Feet",
+                "Small Banner",
+                "Shop Banner SSN",
+                "টেবিল স্টিকার",
+                "রানিং স্টিকার",
+                "সাটার প্যানেল স্টিকার",
+                "স্টিকার"
+            ];
+            
+            localStorage.setItem('posmItems', JSON.stringify(posmItems));
+        }
+
+        // মার্কেট ভিজিট শুরু করুন
+        function startMarketVisit() {
+            showPage('marketVisitContainer');
+            // রিসেট করুন
+            document.getElementById('locationPrompt').style.display = 'block';
+            document.getElementById('qrScanContainer').style.display = 'none';
+            document.getElementById('posmFormContainer').style.display = 'none';
+            document.getElementById('completionMessage').style.display = 'none';
+            
+            // বর্তমান কোম্পানি ইনডেক্স রিসেট করুন
+            localStorage.setItem('currentCompanyIndex', '0');
+            
+            // স্বয়ংক্রিয়ভাবে লোকেশন সনাক্তকরণ শুরু করুন
+            getLocation();
+        }
+
+        // অবস্থান পান
+        function getLocation() {
+            showLoading('অবস্থান শনাক্ত করা হচ্ছে...');
+            document.getElementById('locationStatus').textContent = 'আপনার বর্তমান অবস্থান শনাক্ত করা হচ্ছে...';
+            document.getElementById('locationRetryBtn').style.display = 'none';
+            
+            // জিওলোকেশন API ব্যবহার করে অবস্থান পাওয়া
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        
+                        // অবস্থান সংরক্ষণ
+                        localStorage.setItem('visitLocation', JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude,
+                            timestamp: new Date().toISOString()
+                        }));
+                        
+                        hideLoading();
+                        document.getElementById('locationStatus').textContent = 'অবস্থান সফলভাবে শনাক্ত করা হয়েছে!';
+                        
+                        // লোকেশন প্রম্পট লুকান এবং কিউআর স্ক্যান দেখান
+                        setTimeout(function() {
+                            document.getElementById('locationPrompt').style.display = 'none';
+                            document.getElementById('qrScanContainer').style.display = 'block';
+                        }, 1000);
+                        
+                        showNotification('অবস্থান সফলভাবে শনাক্ত করা হয়েছে!');
+                    },
+                    function(error) {
+                        hideLoading();
+                        document.getElementById('locationStatus').textContent = 'অবস্থান পাওয়া যায়নি। দয়া করে আবার চেষ্টা করুন।';
+                        document.getElementById('locationRetryBtn').style.display = 'block';
+                        
+                        let errorMessage = 'অবস্থান পাওয়া যায়নি। দয়া করে আবার চেষ্টা করুন।';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = "অবস্থান এক্সেসের অনুমতি অস্বীকার করা হয়েছে।";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = "অবস্থান তথ্য অনুপলব্ধ।";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = "অবস্থান অনুরোধ সময়সীমা অতিক্রম করেছে।";
+                                break;
+                        }
+                        
+                        showNotification(errorMessage, true);
+                    },
+                    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                );
+            } else {
+                hideLoading();
+                document.getElementById('locationStatus').textContent = 'আপনার ব্রাউজার অবস্থান সেবা সমর্থন করে না।';
+                document.getElementById('locationRetryBtn').style.display = 'block';
+                showNotification('আপনার ব্রাউজার অবস্থান সেবা সমর্থন করে না।', true);
+            }
+        }
+
+        // কিউআর স্ক্যান সিমুলেট করুন
+        function simulateQRScan() {
+            showLoading('কিউআর কোড স্ক্যান করা হচ্ছে...');
+            
+            // সিমুলেটেড স্ক্যান প্রক্রিয়া
+            setTimeout(function() {
+                hideLoading();
+                
+                // কিউআর স্ক্যান লুকান এবং পিওএসএম ফর্ম দেখান
+                document.getElementById('qrScanContainer').style.display = 'none';
+                document.getElementById('posmFormContainer').style.display = 'block';
+                
+                // প্রথম কোম্পানির জন্য ফর্ম লোড করুন
+                loadCompanyForm(0);
+                
+                showNotification('কিউআর কোড সফলভাবে স্ক্যান করা হয়েছে!');
+            }, 2000);
+        }
+
+        // কোম্পানি ফর্ম লোড করুন
+        function loadCompanyForm(companyIndex) {
+            const companies = [
+                { name: "নগদ", color: "nagad" },
+                { name: "বিকাশ", color: "bkash" },
+                { name: "রকেট", color: "rocket" },
+                { name: "উপায়", color: "upay" },
+                { name: "ট্যাপ", color: "tap" }
+            ];
+            
+            const company = companies[companyIndex];
+            const posmFormContainer = document.getElementById('posmFormContainer');
+            
+            // হেডার তৈরি করুন
+            posmFormContainer.innerHTML = `
+                <div class="company-header ${company.color}-header">
+                    <h3>${company.name} পিওএসএম</h3>
+                </div>
+                <div class="posm-items-list">
+                    ${generatePOSMItems()}
+                </div>
+                <button class="next-company-btn" onclick="nextCompany()">${companyIndex < 4 ? 'পরবর্তী কোম্পানি' : 'সাবমিট করুন'}</button>
+            `;
+        }
+
+        // পিওএসএম আইটেম জেনারেট করুন
+        function generatePOSMItems() {
+            const posmItems = JSON.parse(localStorage.getItem('posmItems') || '[]');
+            let html = '';
+            
+            posmItems.forEach((item, index) => {
+                html += `
+                    <div class="posm-item">
+                        <div class="posm-name">${item}</div>
+                        <div class="posm-counter">
+                            <button class="counter-btn" onclick="decrementCounter(this)">-</button>
+                            <span class="counter-value">0</span>
+                            <button class="counter-btn" onclick="incrementCounter(this)">+</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            return html;
+        }
+
+        // কাউন্টার বৃদ্ধি করুন
+        function incrementCounter(button) {
+            const counter = button.previousElementSibling;
+            let value = parseInt(counter.textContent);
+            counter.textContent = value + 1;
+            updatePOSMCounts();
+        }
+
+        // কাউন্টার হ্রাস করুন
+        function decrementCounter(button) {
+            const counter = button.nextElementSibling;
+            let value = parseInt(counter.textContent);
+            if (value > 0) {
+                counter.textContent = value - 1;
+                updatePOSMCounts();
+            }
+        }
+
+        // পিওএসএম কাউন্ট আপডেট করুন
+        function updatePOSMCounts() {
+            const posmItems = document.querySelectorAll('.posm-item');
+            const counts = {};
+            
+            posmItems.forEach(item => {
+                const name = item.querySelector('.posm-name').textContent;
+                const value = parseInt(item.querySelector('.counter-value').textContent);
+                counts[name] = value;
+            });
+            
+            localStorage.setItem('currentPOSMCounts', JSON.stringify(counts));
+        }
+
+        // পরবর্তী কোম্পানিতে যান
+        function nextCompany() {
+            const currentCompanyIndex = parseInt(localStorage.getItem('currentCompanyIndex') || '0');
+            updatePOSMCounts();
+            
+            if (currentCompanyIndex < 4) {
+                // পরবর্তী কোম্পানিতে যান
+                const nextIndex = currentCompanyIndex + 1;
+                localStorage.setItem('currentCompanyIndex', nextIndex.toString());
+                loadCompanyForm(nextIndex);
+            } else {
+                // সব কোম্পানি সম্পন্ন হয়েছে
+                document.getElementById('posmFormContainer').style.display = 'none';
+                document.getElementById('completionMessage').style.display = 'block';
+                
+                // ডেটা সংরক্ষণ করুন (প্রকৃত অ্যাপে সার্ভারে পাঠানো হবে)
+                saveVisitData();
+                
+                showNotification('মার্কেট ভিজিট সম্পন্ন হয়েছে!');
+            }
+        }
+
+        // ভিজিট ডেটা সংরক্ষণ করুন
+        function saveVisitData() {
+            const visitData = {
+                date: new Date().toISOString(),
+                location: JSON.parse(localStorage.getItem('visitLocation') || '{}'),
+                posmCounts: JSON.parse(localStorage.getItem('currentPOSMCounts') || '{}'),
+                user: JSON.parse(localStorage.getItem('userData') || '{}'),
+                completed: true
+            };
+            
+            // ভিজিট ডেটা সংরক্ষণ করুন
+            const visits = JSON.parse(localStorage.getItem('marketVisits') || '[]');
+            visits.push(visitData);
+            localStorage.setItem('marketVisits', JSON.stringify(visits));
+            
+            // এডমিন অ্যাপে ডেটা আপডেট করুন
+            updateAdminData(visitData);
+        }
+
+        // এডমিন ডেটা আপডেট করুন
+        function updateAdminData(visitData) {
+            // এডমিন ডেটা আপডেট করার লজিক
+            const adminVisits = JSON.parse(localStorage.getItem('adminVisits') || '[]');
+            adminVisits.push(visitData);
+            localStorage.setItem('adminVisits', JSON.stringify(adminVisits));
+        }
+
+        // পৃষ্ঠা দেখানোর ফাংশন
+        function showPage(pageId) {
+            // সব পৃষ্ঠা লুকান
+            const pages = document.querySelectorAll('.page-container, .menu-container, .login-container');
+            pages.forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // নির্দিষ্ট পৃষ্ঠা দেখান
+            document.getElementById(pageId).style.display = 'block';
+            
+            // বিশেষ পৃষ্ঠার জন্য অতিরিক্ত লজিক
+            if (pageId === 'timeContainer') {
+                updateTime();
+            }
+        }
+
+        // নোটিফিকেশন দেখান
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.background = isError ? 'var(--primary-color)' : 'var(--success)';
+            notification.className = isError ? 'notification error' : 'notification';
+            notification.style.display = 'block';
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
+            }, 3000);
+        }
+
+        // লোডিং দেখান
+        function showLoading(text = 'লোড হচ্ছে...') {
+            const loading = document.getElementById('loading');
+            const loadingText = document.querySelector('.loading-text');
+            loadingText.textContent = text;
+            loading.style.display = 'flex';
+        }
+
+        // লোডিং লুকান
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+        }
+
+        // লগইন ফাংশন
+        function login() {
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            
+            // সহজ ভ্যালিডেশন
+            if(phone.length !== 11 || !phone.startsWith('01')) {
+                showNotification('সঠিক মোবাইল নম্বর দিন', true);
+                return;
+            }
+            
+            if(password.length < 4) {
+                showNotification('পাসওয়ার্ড至少 ৪ অক্ষরের হতে হবে', true);
+                return;
+            }
+            
+            showLoading('লগইন করা হচ্ছে...');
+            
+            // এডমিন থেকে ইউজার ডেটা চেক করুন
+            const adminUsers = JSON.parse(localStorage.getItem('adminUsers') || '[]');
+            const user = adminUsers.find(u => u.phone === phone && u.password === password);
+            
+            // সিমুলেটেড লগইন প্রক্রিয়া
+            setTimeout(() => {
+                if (user) {
+                    hideLoading();
+                    
+                    // ব্যবহারকারীর তথ্য সংরক্ষণ করুন
+                    localStorage.setItem('userData', JSON.stringify(user));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    
+                    document.getElementById('loginContainer').style.display = 'none';
+                    document.getElementById('menuContainer').style.display = 'block';
+                    
+                    // ব্যবহারকারীর তথ্য সেট করুন
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('userPhone').textContent = user.phone;
+                    
+                    showNotification('সফলভাবে লগইন হয়েছে!');
+                } else {
+                    hideLoading();
+                    showNotification('ভুল মোবাইল নম্বর বা পাসওয়ার্ড', true);
+                }
+            }, 1500);
+        }
+
+        // লগআউট ফাংশন
+        function logout() {
+            if(confirm('আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?')) {
+                localStorage.removeItem('isLoggedIn');
+                showPage('loginContainer');
+                showNotification('সফলভাবে লগআউট হয়েছে!');
+            }
+        }
+
+        // অবস্থান সেভ ফাংশন
+        function saveLocation() {
+            showLoading('অবস্থান সেভ করা হচ্ছে...');
+            
+            // জিওলোকেশন API ব্যবহার করে অবস্থান পাওয়া
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        
+                        // অবস্থান localStorage-এ সংরক্ষণ
+                        localStorage.setItem('homeLocation', JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude,
+                            timestamp: new Date().toISOString()
+                        }));
+                        
+                        hideLoading();
+                        showNotification('অবস্থান সফলভাবে সেভ হয়েছে!');
+                    },
+                    function(error) {
+                        hideLoading();
+                        showNotification('অবস্থান পাওয়া যায়নি। দয়া করে মানচিত্র থেকে manually অবস্থান সেট করুন।', true);
+                    }
+                );
+            } else {
+                hideLoading();
+                showNotification('আপনার ব্রাউজার অবস্থান সেবা সমর্থন করে না।', true);
+            }
+        }
+
+        // সময় আপডেট ফাংশন
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('bn-BD');
+            const timeDisplay = document.getElementById('currentTime');
+            if(timeDisplay) {
+                timeDisplay.textContent = timeString;
+            }
+        }
+
+        // দিন শুরু ফাংশন
+        function startDay() {
+            const startTime = new Date();
+            const dayData = {
+                start: startTime.toISOString(),
+                end: null
+            };
+            
+            localStorage.setItem('dayData', JSON.stringify(dayData));
+            showNotification('দিন শুরু হয়েছে: ' + startTime.toLocaleTimeString('bn-BD'));
+            
+            // ইতিহাস আপডেট করুন
+            loadDayHistory();
+        }
+
+        // দিন শেষ ফাংশন
+        function endDay() {
+            const endTime = new Date();
+            const dayData = JSON.parse(localStorage.getItem('dayData') || '{}');
+            
+            if(!dayData.start) {
+                showNotification('আপনি এখনো দিন শুরু করেননি!', true);
+                return;
+            }
+            
+            const startTime = new Date(dayData.start);
+            dayData.end = endTime.toISOString();
+            
+            localStorage.setItem('dayData', JSON.stringify(dayData));
+            
+            // দিনের ডেটা ইতিহাসে সংরক্ষণ করুন
+            const history = JSON.parse(localStorage.getItem('dayHistory') || '[]');
+            history.push(dayData);
+            localStorage.setItem('dayHistory', JSON.stringify(history));
+            
+            const duration = endTime - startTime;
+            const hours = Math.floor(duration / 3600000);
+            const minutes = Math.floor((duration % 3600000) / 60000);
+            
+            showNotification('দিন শেষ হয়েছে। মোট সময়: ' + hours + ' ঘন্টা ' + minutes + ' মিনিট');
+            
+            // ইতিহাস আপডেট করুন
+            loadDayHistory();
+        }
+
+        // দিনের ইতিহাস লোড করুন
+        function loadDayHistory() {
+            const history = JSON.parse(localStorage.getItem('dayHistory') || '[]');
+            const historyList = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<p>কোন ইতিহাস পাওয়া যায়নি</p>';
+                return;
+            }
+            
+            historyList.innerHTML = '';
+            history.slice().reverse().forEach((day, index) => {
+                const start = new Date(day.start);
+                const end = day.end ? new Date(day.end) : null;
+                
+                const dayElement = document.createElement('div');
+                dayElement.style.padding = '15px';
+                dayElement.style.marginBottom = '15px';
+                dayElement.style.background = 'var(--secondary-color)';
+                dayElement.style.borderRadius = '10px';
+                dayElement.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                
+                let dayHTML = `
+                    <strong>দিন ${history.length - index}</strong><br>
+                    শুরু: ${start.toLocaleString('bn-BD')}
+                `;
+                
+                if (end) {
+                    const duration = end - start;
+                    const hours = Math.floor(duration / 3600000);
+                    const minutes = Math.floor((duration % 3600000) / 60000);
+                    dayHTML += `<br>শেষ: ${end.toLocaleString('bn-BD')}`;
+                    dayHTML += `<br>মোট সময়: ${hours} ঘন্টা ${minutes} মিনিট`;
+                } else {
+                    dayHTML += `<br>শেষ: এখনও চলমান`;
+                }
+                
+                dayElement.innerHTML = dayHTML;
+                historyList.appendChild(dayElement);
+            });
+        }
+
+        // ডিস্ট্রিবিউশন আইটেম যোগ করুন
+        function addDistributionItem() {
+            const name = document.getElementById('itemName').value;
+            const quantity = document.getElementById('itemQuantity').value;
+            const type = document.getElementById('itemType').value;
+            
+            if (!name || !quantity) {
+                showNotification('সমস্ত তথ্য পূরণ করুন', true);
+                return;
+            }
+            
+            const items = JSON.parse(localStorage.getItem('distributionItems') || '[]');
+            items.push({
+                name,
+                quantity,
+                type,
+                date: new Date().toISOString()
+            });
+            
+            localStorage.setItem('distributionItems', JSON.stringify(items));
+            
+            // ফর্ম রিসেট করুন
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQuantity').value = '';
+            
+            showNotification('আইটেম যোগ করা হয়েছে!');
+            
+            // আইটেম তালিকা আপডেট করুন
+            loadDistributionItems();
+        }
+
+        // ডিস্ট্রিবিউশন আইটেম লোড করুন
+        function loadDistributionItems() {
+            const items = JSON.parse(localStorage.getItem('distributionItems') || '[]');
+            const itemsContainer = document.getElementById('itemsContainer');
+            
+            if (items.length === 0) {
+                itemsContainer.innerHTML = '<p>কোন আইটেম পাওয়া যায়নি</p>';
+                return;
+            }
+            
+            itemsContainer.innerHTML = '';
+            items.slice().reverse().forEach((item, index) => {
+                const itemElement = document.createElement('div');
+                itemElement.style.padding = '15px';
+                itemElement.style.marginBottom = '15px';
+                itemElement.style.background = item.type === 'receive' ? 'var(--success-light)' : '#ffebee';
+                itemElement.style.borderRadius = '10px';
+                itemElement.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                
+                const date = new Date(item.date);
+                itemElement.innerHTML = `
+                    <strong>${item.name}</strong> - ${item.quantity}টি<br>
+                    ধরন: ${item.type === 'receive' ? 'রিসিভ' : 'ফেরত'}<br>
+                    তারিখ: ${date.toLocaleString('bn-BD')}
+                `;
+                
+                itemsContainer.appendChild(itemElement);
+            });
+        }
+    </script>
+</body>
+</html>)
